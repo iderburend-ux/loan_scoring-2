@@ -1,11 +1,13 @@
 import joblib
 import numpy as np
 import pandas as pd
+from pathlib import Path
 from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
 
-bundle = joblib.load("loan_scoring_model.pkl")
+BASE_DIR = Path(__file__).parent
+bundle = joblib.load(BASE_DIR / "loan_scoring_model.pkl")
 
 model = bundle["model"]
 scaler = bundle["scaler"]
