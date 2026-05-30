@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Зээлийн Оноо Тооцох</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body { background: #f0f4f8; }
+    .card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .card-header { background: linear-gradient(135deg, #1a6fc4, #0d4ea6); border-radius: 16px 16px 0 0 !important; }
+    .btn-primary { background: #1a6fc4; border-color: #1a6fc4; }
+    .btn-primary:hover { background: #0d4ea6; border-color: #0d4ea6; }
+    .form-label { font-weight: 600; color: #374151; }
+    .form-control, .form-select { border-radius: 8px; border: 1.5px solid #d1d5db; }
+    .form-control:focus, .form-select:focus { border-color: #1a6fc4; box-shadow: 0 0 0 3px rgba(26,111,196,.15); }
+    .input-group-text { background: #e8f0fb; border-color: #d1d5db; color: #1a6fc4; font-weight: 600; }
+  </style>
+</head>
+<body class="py-5">
+  <div class="container" style="max-width: 560px;">
+    <div class="card">
+      <div class="card-header py-4 text-center text-white">
+        <h2 class="mb-1 fw-bold">🏦 Зээлийн Оноо</h2>
+        <p class="mb-0 opacity-75 small">Зээлийн хүсэлтийн мэдээллийг оруулна уу</p>
+      </div>
+      <div class="card-body p-4">
+
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ error }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/predict" novalidate>
+
+          <div class="mb-3">
+            <label class="form-label" for="monthly_income">Сарын орлого</label>
+            <div class="input-group">
+              <input
+                type="number" id="monthly_income" name="monthly_income"
+                class="form-control" placeholder="1,000,000"
+                min="1" step="1000" required
+                value="{{ request.form.monthly_income if request else '' }}" />
+              <span class="input-group-text">₮</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="employment_years">Ажилласан жил</label>
+            <div class="input-group">
+              <input
+                type="number" id="employment_years" name="employment_years"
+                class="form-control" placeholder="3"
+                min="0" max="50" step="0.5" required
+                value="{{ request.form.employment_years if request else '' }}" />
+              <span class="input-group-text">жил</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="requested_amount">Хүсэж буй зээлийн дүн</label>
+            <div class="input-group">
+              <input
+                type="number" id="requested_amount" name="requested_amount"
+                class="form-control" placeholder="5,000,000"
+                min="1" step="10000" required
+                value="{{ request.form.requested_amount if request else '' }}" />
+              <span class="input-group-text">₮</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="employment_type">Ажлын байрны төрөл</label>
+            <select id="employment_type" name="employment_type" class="form-select" required>
+              <option value="" disabled selected>— Сонгоно уу —</option>
+              {% for et in employment_types %}
+              <option value="{{ et }}" {% if request and request.form.employment_type == et %}selected{% endif %}>
+                {{ et }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+              Зээлийн оноо тооцох →
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <p class="text-center text-muted mt-3 small">
+      Gradient Boosting · v1.0.0
+    </p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
